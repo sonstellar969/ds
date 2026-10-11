@@ -1,15 +1,16 @@
 #include <stdio.h>
 
-void sst(int arr[], int n) {
+void selectionSort(int arr[], int n) {
     for (int i = 0; i < n - 1; i++) {
-
         int min = i;
 
         for (int j = i + 1; j < n; j++) {
-            if (arr[j] < arr[min])
+            if (arr[j] < arr[min]) {
                 min = j;
+            }
         }
 
+        // Swap the elements
         int temp = arr[i];
         arr[i] = arr[min];
         arr[min] = temp;
@@ -17,14 +18,41 @@ void sst(int arr[], int n) {
 }
 
 int main() {
-    int arr[] = {5, 1, 4, 2, 8};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    int n;
 
-    sst(arr, n);
+    // Get the array size from the user
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
 
-    printf("Sorted array: ");
-    for (int i = 0; i < n; i++)
+    if (n <= 0) {
+        printf("Invalid array size!\n");
+        return 1;
+    }
+
+    int arr[n];
+
+    // Get array elements from the user
+    printf("Enter %d elements:\n", n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // Display the original array
+    printf("Original array: ");
+    for (int i = 0; i < n; i++) {
         printf("%d ", arr[i]);
+    }
+
+    // Perform Selection Sort
+    selectionSort(arr, n);
+
+    // Display the sorted array
+    printf("\nSorted array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+
     printf("\n");
 
     return 0;
