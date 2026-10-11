@@ -81,7 +81,7 @@ struct Node* deleteNode(struct Node *root, int value) {
     } else {
         // this is the node to delete, 3 cases:
 
-        // Case 1 and 2: no left child (leaf, or only a right child)
+        // Case 1: no left child (leaf, or only a right child)
         if (root->left == NULL) {
             struct Node *temp = root->right;   // save the right child (may be NULL)
             free(root);                        // delete the node
@@ -178,6 +178,23 @@ int countLeaves(struct Node *root) {
     return countLeaves(root->left) + countLeaves(root->right);
 }
 
+// ---------- DISPLAY (prints the tree sideways) ----------
+
+void display(struct Node *root, int space) {
+    if (root == NULL) return;
+
+    space = space + 5;                    // each level goes 5 spaces further right
+
+    display(root->right, space);          // print the right subtree first (it shows on top)
+
+    for (int i = 5; i < space; i++) {     // print spaces to push this value right
+        printf(" ");
+    }
+    printf("%d\n", root->data);           // print this node
+
+    display(root->left, space);           // then the left subtree (it shows at the bottom)
+}
+
 // ---------- MAIN MENU ----------
 
 int main() {
@@ -190,7 +207,7 @@ int main() {
         printf("4.Inorder     5.Preorder     6.Postorder\n");
         printf("7.Level Order 8.Height       9.Count Nodes\n");
         printf("10.Count Leaves 11.Find Min  12.Find Max\n");
-        printf("13.Exit\n");
+        printf("13.Display    14.Exit\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
 
@@ -265,6 +282,15 @@ int main() {
                 break;
 
             case 13:
+                if (root == NULL) {
+                    printf("Tree is empty\n");
+                } else {
+                    printf("Tree (rotated left, root on the left edge):\n");
+                    display(root, 0);
+                }
+                break;
+
+            case 14:
                 printf("Exiting...\n");
                 exit(0);
 
