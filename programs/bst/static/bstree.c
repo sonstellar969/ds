@@ -11,43 +11,43 @@ struct Node {
 // ---------- CREATE NODE ----------
 
 struct Node* createNode(int value) {
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));  // ask memory for one node
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
     newNode->data = value;
-    newNode->left = NULL;       // new node has no children yet
+    newNode->left = NULL;
     newNode->right = NULL;
-    return newNode;             // give back the address of the new node
+    return newNode;
 }
 
 // ---------- INSERT ----------
 
 struct Node* insert(struct Node *root, int value) {
     if (root == NULL) {
-        return createNode(value);                 // found an empty spot, place the new node here
+        return createNode(value);
     }
 
     if (value < root->data) {
-        root->left = insert(root->left, value);   // smaller value, go to the left subtree
+        root->left = insert(root->left, value);
     } else if (value > root->data) {
-        root->right = insert(root->right, value); // bigger value, go to the right subtree
+        root->right = insert(root->right, value);
     } else {
         printf("Value %d already exists (no duplicates allowed)\n", value);
     }
 
-    return root;                                  // root of this subtree stays the same
+    return root;
 }
 
 // ---------- SEARCH ----------
 
 struct Node* search(struct Node *root, int value) {
     if (root == NULL || root->data == value) {
-        return root;                              // found it, or reached a dead end (NULL)
+        return root;
     }
 
     if (value < root->data) {
-        return search(root->left, value);         // smaller, look left
+        return search(root->left, value);
     }
 
-    return search(root->right, value);            // bigger, look right
+    return search(root->right, value);
 }
 
 // ---------- FIND MINIMUM ----------
@@ -56,7 +56,7 @@ struct Node* findMin(struct Node *root) {
     struct Node *current = root;
 
     while (current->left != NULL) {
-        current = current->left;                  // smallest value is the leftmost node
+        current = current->left;
     }
 
     return current;
@@ -68,7 +68,7 @@ struct Node* findMax(struct Node *root) {
     struct Node *current = root;
 
     while (current->right != NULL) {
-        current = current->right;                 // largest value is the rightmost node
+        current = current->right;
     }
 
     return current;
@@ -83,30 +83,28 @@ struct Node* deleteNode(struct Node *root, int value) {
     }
 
     if (value < root->data) {
-        root->left = deleteNode(root->left, value);     // target is in the left subtree
+        root->left = deleteNode(root->left, value);
     } else if (value > root->data) {
-        root->right = deleteNode(root->right, value);   // target is in the right subtree
+        root->right = deleteNode(root->right, value);
     } else {
-        // this is the node to delete, 3 cases:
-
-        // Case 1: no left child (leaf, or only a right child)
+        // Case 1: No left child
         if (root->left == NULL) {
-            struct Node *temp = root->right;   // save the right child (may be NULL)
-            free(root);                        // delete the node
-            return temp;                       // right child takes its place
-        }
-
-        // Case 2: no right child (only a left child)
-        if (root->right == NULL) {
-            struct Node *temp = root->left;    // save the left child
+            struct Node *temp = root->right;
             free(root);
-            return temp;                       // left child takes its place
+            return temp;
         }
 
-        // Case 3: two children
-        struct Node *successor = findMin(root->right);          // smallest node in the right subtree
-        root->data = successor->data;                            // copy successor's value into this node
-        root->right = deleteNode(root->right, successor->data);  // delete the original successor node
+        // Case 2: No right child
+        if (root->right == NULL) {
+            struct Node *temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Case 3: Two children
+        struct Node *successor = findMin(root->right);
+        root->data = successor->data;
+        root->right = deleteNode(root->right, successor->data);
     }
 
     return root;
@@ -114,7 +112,7 @@ struct Node* deleteNode(struct Node *root, int value) {
 
 // ---------- TRAVERSALS ----------
 
-void inorder(struct Node *root) {            // Left, Root, Right (gives sorted order)
+void inorder(struct Node *root) {
     if (root == NULL) {
         return;
     }
@@ -124,7 +122,7 @@ void inorder(struct Node *root) {            // Left, Root, Right (gives sorted 
     inorder(root->right);
 }
 
-void preorder(struct Node *root) {           // Root, Left, Right
+void preorder(struct Node *root) {
     if (root == NULL) {
         return;
     }
@@ -134,7 +132,7 @@ void preorder(struct Node *root) {           // Root, Left, Right
     preorder(root->right);
 }
 
-void postorder(struct Node *root) {          // Left, Right, Root
+void postorder(struct Node *root) {
     if (root == NULL) {
         return;
     }
@@ -144,24 +142,24 @@ void postorder(struct Node *root) {          // Left, Right, Root
     printf("%d ", root->data);
 }
 
-void levelOrder(struct Node *root) {         // level by level, left to right
+void levelOrder(struct Node *root) {
     if (root == NULL) {
         return;
     }
 
-    struct Node *queue[100];                 // simple array used as a queue
+    struct Node *queue[100];
     int front = 0, rear = 0;
 
-    queue[rear] = root;                      // put root in the queue
+    queue[rear] = root;
     rear++;
 
     while (front < rear) {
-        struct Node *current = queue[front]; // take the node at the front
+        struct Node *current = queue[front];
         front++;
 
         printf("%d ", current->data);
 
-        if (current->left != NULL) {         // add children to the back of the queue
+        if (current->left != NULL) {
             queue[rear] = current->left;
             rear++;
         }
@@ -177,7 +175,7 @@ void levelOrder(struct Node *root) {         // level by level, left to right
 
 int height(struct Node *root) {
     if (root == NULL) {
-        return -1;                           // empty tree has height -1
+        return -1;
     }
 
     int leftHeight = height(root->left);
@@ -208,30 +206,30 @@ int countLeaves(struct Node *root) {
     }
 
     if (root->left == NULL && root->right == NULL) {
-        return 1;                             // no children = leaf
+        return 1;
     }
 
     return countLeaves(root->left) + countLeaves(root->right);
 }
 
-// ---------- DISPLAY (prints the tree sideways) ----------
+// ---------- DISPLAY ----------
 
 void display(struct Node *root, int space) {
     if (root == NULL) {
         return;
     }
 
-    space = space + 5;                        // each level goes 5 spaces further right
+    space = space + 5;
 
-    display(root->right, space);              // print the right subtree first (it shows on top)
+    display(root->right, space);
 
-    for (int i = 5; i < space; i++) {         // print spaces to push this value right
+    for (int i = 5; i < space; i++) {
         printf(" ");
     }
 
-    printf("%d\n", root->data);               // print this node
+    printf("%d\n", root->data);
 
-    display(root->left, space);               // then the left subtree (it shows at the bottom)
+    display(root->left, space);
 }
 
 // ---------- MAIN ----------
@@ -247,6 +245,10 @@ int main() {
     root = insert(root, 40);
     root = insert(root, 60);
     root = insert(root, 80);
+
+    // DISPLAY
+    printf("Binary Search Tree:\n");
+    display(root, 0);
 
     // DELETE
     root = deleteNode(root, 20);
@@ -264,22 +266,22 @@ int main() {
     // MAXIMUM
     printf("Maximum: %d\n", findMax(root)->data);
 
-    // INORDER TRAVERSAL
+    // INORDER
     printf("Inorder: ");
     inorder(root);
     printf("\n");
 
-    // PREORDER TRAVERSAL
+    // PREORDER
     printf("Preorder: ");
     preorder(root);
     printf("\n");
 
-    // POSTORDER TRAVERSAL
+    // POSTORDER
     printf("Postorder: ");
     postorder(root);
     printf("\n");
 
-    // LEVEL ORDER TRAVERSAL
+    // LEVEL ORDER
     printf("Level Order: ");
     levelOrder(root);
     printf("\n");
