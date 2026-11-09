@@ -1,67 +1,62 @@
 #include <stdio.h>
-#include <stdlib.h>                     // malloc / free
 
-void swap(int *a, int *b) {             // swap via pointers
-    int t = *a;
-    *a = *b;
-    *b = t;
-}
+int part(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
 
-int part(int a[], int lo, int hi) {     // put pivot in place, return index
-    int p = a[hi];                      // last element is pivot
-    int i = lo - 1;                     // end of smaller-than-pivot section
-
-    for (int j = lo; j < hi; j++) {     // scan everything except pivot
-        if (a[j] < p) {                 // belongs left of pivot
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
             i++;
-            swap(&a[i], &a[j]);
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
         }
     }
-    swap(&a[i + 1], &a[hi]);            // place pivot after smaller section
+
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+
     return i + 1;
 }
 
-void qs(int a[], int lo, int hi) {      // sort range [lo..hi]
-    if (lo < hi) {                      // stop if 0 or 1 element
-        int pi = part(a, lo, hi);       // pivot now fixed
-        qs(a, lo, pi - 1);              // sort left
-        qs(a, pi + 1, hi);              // sort right
-    }
-}
+void qs(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = part(arr, low, high);
 
-void print(int a[], int n) {
-    for (int i = 0; i < n; i++) printf("%d ", a[i]);
-    printf("\n");
+        qs(arr, low, pi - 1);
+        qs(arr, pi + 1, high);
+    }
 }
 
 int main() {
     int n;
 
-    printf("Enter n: ");
+    printf("Enter the number of elements: ");
     scanf("%d", &n);
 
-    if (n < 1) {
-        printf("Invalid\n");
-        return 0;
+    if (n <= 0) {
+        printf("Invalid array size!\n");
+        return 1;
     }
 
-    int *a = (int *)malloc(n * sizeof(int));   // size decided at runtime
-    if (a == NULL) {
-        printf("Malloc failed\n");
-        return 0;
+    int arr[n];
+
+    printf("Enter %d elements:\n", n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
     }
 
-    printf("Enter %d nums: ", n);
-    for (int i = 0; i < n; i++) scanf("%d", &a[i]);
+    qs(arr, 0, n - 1);
 
-    printf("Before: ");
-    print(a, n);
+    printf("Sorted array: ");
 
-    qs(a, 0, n - 1);
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
 
-    printf("After: ");
-    print(a, n);
+    printf("\n");
 
-    free(a);                            // give memory back
     return 0;
 }
