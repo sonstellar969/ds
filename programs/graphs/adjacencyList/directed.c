@@ -1,45 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// One node represents one outgoing neighbour
+// Structure for each linked-list node
 struct Node {
     int vertex;
     struct Node *next;
 };
 
-// Insert a directed neighbour into a vertex's linked list
-void addEdge(struct Node *adjacencyList[], int from, int to) {
+// Insert a directed edge: from -> to
+void addEdge(struct Node *adj[], int from, int to) {
 
     struct Node *newNode = malloc(sizeof(struct Node));
 
     newNode->vertex = to;
-    newNode->next = NULL;
+    newNode->next = adj[from];
 
-    // If the linked list is empty
-    if (adjacencyList[from] == NULL) {
-        adjacencyList[from] = newNode;
-        return;
-    }
-
-    // Move to the end of the linked list
-    struct Node *temp = adjacencyList[from];
-
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-
-    // Attach the new node
-    temp->next = newNode;
+    adj[from] = newNode;
 }
 
-// Display the adjacency list
-void display(struct Node *adjacencyList[], int vertexCount) {
+// Display adjacency list
+void display(struct Node *adj[], int n) {
 
-    for (int i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < n; i++) {
 
         printf("Vertex %d: ", i);
 
-        struct Node *temp = adjacencyList[i];
+        struct Node *temp = adj[i];
 
         while (temp != NULL) {
             printf("%d -> ", temp->vertex);
@@ -50,82 +36,69 @@ void display(struct Node *adjacencyList[], int vertexCount) {
     }
 }
 
-// Free dynamically allocated memory
-void freeGraph(struct Node *adjacencyList[], int vertexCount) {
+// Free allocated memory
+void freeGraph(struct Node *adj[], int n) {
 
-    for (int i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < n; i++) {
 
-        struct Node *temp = adjacencyList[i];
+        struct Node *temp = adj[i];
 
         while (temp != NULL) {
-
-            struct Node *nodeToDelete = temp;
+            struct Node *del = temp;
             temp = temp->next;
-
-            free(nodeToDelete);
+            free(del);
         }
     }
 
-    free(adjacencyList);
+    free(adj);
 }
 
 int main() {
 
-    int vertexCount, edgeCount;
+    int n, e;
 
     printf("Enter number of vertices: ");
-    scanf("%d", &vertexCount);
+    scanf("%d", &n);
 
     printf("Enter number of edges: ");
-    scanf("%d", &edgeCount);
+    scanf("%d", &e);
 
-    if (vertexCount < 1 || edgeCount < 0) {
+    if (n < 1 || e < 0) {
         printf("Invalid input\n");
         return 1;
     }
 
-    // Dynamically allocate an array of linked-list head pointers
-    struct Node **adjacencyList =
-        malloc(vertexCount * sizeof(struct Node *));
+    // Create an array of linked-list head pointers
+    struct Node **adj = malloc(n * sizeof(struct Node *));
 
-    if (adjacencyList == NULL) {
-        printf("Memory allocation failed\n");
-        return 1;
-    }
-
-    // Initially, every vertex has an empty linked list
-    for (int i = 0; i < vertexCount; i++) {
-        adjacencyList[i] = NULL;
+    // Initially all lists are empty
+    for (int i = 0; i < n; i++) {
+        adj[i] = NULL;
     }
 
     // Read directed edges
-    printf("Enter directed edges (from to):\n");
-
-    for (int i = 1; i <= edgeCount; i++) {
+    for (int i = 0; i < e; i++) {
 
         int from, to;
 
-        printf("Edge %d: ", i);
+        printf("Enter edge (from to): ");
         scanf("%d %d", &from, &to);
 
-        if (from < 0 || from >= vertexCount ||
-            to < 0 || to >= vertexCount) {
-
+        if (from < 0 || from >= n || to < 0 || to >= n) {
             printf("Invalid vertex. Try again.\n");
             i--;
             continue;
         }
 
-        // Add only from -> to
-        // Do NOT add the reverse connection
-        addEdge(adjacencyList, from, to);
+        // Only one direction
+        addEdge(adj, from, to);
     }
 
     printf("\nDirected Adjacency List:\n");
 
-    display(adjacencyList, vertexCount);
+    display(adj, n);
 
-    freeGraph(adjacencyList, vertexCount);
+    freeGraph(adj, n);
 
     return 0;
 }
