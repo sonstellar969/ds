@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,7 +8,7 @@ struct Node {
     struct Node *next;
 };
 
-// Insert a neighbour into the linked list
+// Insert an edge into the adjacency list
 void addEdge(struct Node *adj[], int from, int to) {
 
     struct Node *newNode = malloc(sizeof(struct Node));
@@ -90,10 +91,8 @@ int main() {
             continue;
         }
 
-        // First direction
+        // Add edge in both directions
         addEdge(adj, from, to);
-
-        // Reverse direction
         addEdge(adj, to, from);
     }
 
